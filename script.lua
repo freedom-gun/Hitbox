@@ -1,7 +1,7 @@
 --------------------------- SETTINGS ---------------------------
-
 _G.HeadSize = 50
 _G.Transparency = 0.5
+_G.MaxDistance = 80
 _G.Enabled = true
 ----------------------------------------------------------------
 
@@ -9,6 +9,7 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local CoreGui = game:GetService("CoreGui")
+local LocalPlayer = Players.LocalPlayer
 
 --------------------------- INTRO ---------------------------
 local function playIntro()
@@ -85,7 +86,7 @@ gui.ResetOnSpawn = false
 gui.Parent = CoreGui
 
 local main = Instance.new("Frame")
-main.Size = UDim2.new(0, 210, 0, 195) -- diperbesar
+main.Size = UDim2.new(0, 210, 0, 250)
 main.Position = UDim2.new(0, 100, 0, 100)
 main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 main.BorderSizePixel = 0
@@ -97,7 +98,6 @@ local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 8)
 corner.Parent = main
 
--- Tombol V2 (kiri atas)
 local v2Btn = Instance.new("TextButton")
 v2Btn.Size = UDim2.new(0, 35, 0, 20)
 v2Btn.Position = UDim2.new(0, 5, 0, 0)
@@ -169,6 +169,27 @@ transMinus.Position = UDim2.new(0, 110, 0, 132)
 transMinus.Text = "Trans -"
 transMinus.Parent = main
 
+local distLabel = Instance.new("TextLabel")
+distLabel.Size = UDim2.new(1, 0, 0, 18)
+distLabel.Position = UDim2.new(0, 0, 0, 162)
+distLabel.BackgroundTransparency = 1
+distLabel.Text = "Distance : " .. _G.MaxDistance
+distLabel.TextColor3 = Color3.new(1, 1, 1)
+distLabel.TextSize = 13
+distLabel.Parent = main
+
+local distPlus = Instance.new("TextButton")
+distPlus.Size = UDim2.new(0, 90, 0, 24)
+distPlus.Position = UDim2.new(0, 10, 0, 182)
+distPlus.Text = "Dist +"
+distPlus.Parent = main
+
+local distMinus = Instance.new("TextButton")
+distMinus.Size = UDim2.new(0, 90, 0, 24)
+distMinus.Position = UDim2.new(0, 110, 0, 182)
+distMinus.Text = "Dist -"
+distMinus.Parent = main
+
 local mini = Instance.new("TextButton")
 mini.Size = UDim2.new(0, 22, 0, 20)
 mini.Position = UDim2.new(1, -50, 0, 0)
@@ -199,21 +220,42 @@ local iconCorner = Instance.new("UICorner")
 iconCorner.CornerRadius = UDim.new(0, 8)
 iconCorner.Parent = icon
 
---------------------------- FUNCTIONS ---------------------------
-local function resetHitbox()
+--------------------------- CACHING SYSTEM ---------------------------
+local cachedMobs = {}          -- daftar mobs yang di-cache
+local lastCacheTime = 0
+local CACHE_INTERVAL = 1.5     -- update cache setiap 1.5 detik
+
+local function updateCache()
+    local newCache = {}
     for _, v in pairs(workspace:GetDescendants()) do
-        if v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") then
+        if v:IsA("Model")
+        and v:FindFirstChild("Humanoid")
+        and v:FindFirstChild("HumanoidRootPart") then
+
             local player = Players:GetPlayerFromCharacter(v)
             if not player then
-                local hrp = v.HumanoidRootPart
-                pcall(function()
-                    hrp.Size = Vector3.new(2, 2, 1)
-                    hrp.Transparency = 1
-                    hrp.Material = Enum.Material.Plastic
-                    hrp.CanCollide = true
-                    hrp.BrickColor = BrickColor.new("Medium stone grey")
-                end)
+                if not (v:FindFirstChild("Friendly") or v:FindFirstChild("Ally") or v:FindFirstChild("Pet")) then
+                    table.insert(newCache, v)
+                end
             end
+        end
+    end
+    cachedMobs = newCache
+    lastCacheTime = tick()
+end
+
+--------------------------- FUNCTIONS ---------------------------
+local function resetHitbox()
+    for _, v in pairs(cachedMobs) do
+        if v and v.Parent and v:FindFirstChild("HumanoidRootPart") then
+            local hrp = v.HumanoidRootPart
+            pcall(function()
+                hrp.Size = Vector3.new(2, 2, 1)
+                hrp.Transparency = 1
+                hrp.Material = Enum.Material.Plastic
+                hrp.CanCollide = true
+                hrp.BrickColor = BrickColor.new("Medium stone grey")
+            end)
         end
     end
 end
@@ -226,9 +268,8 @@ local function destroyCurrent()
     end
 end
 
--- Tombol V2
 v2Btn.MouseButton1Click:Connect(function()
-    destroyCurrent() -- matikan script ini dulu
+    destroyCurrent()
     task.wait(0.1)
     loadstring(game:HttpGet("https://raw.githubusercontent.com/freedom-gun/Hitbox-mobs/main/script.lua"))()
 end)
@@ -265,6 +306,16 @@ transMinus.MouseButton1Click:Connect(function()
     transLabel.Text = "Transparent : " .. string.format("%.1f", _G.Transparency)
 end)
 
+distPlus.MouseButton1Click:Connect(function()
+    _G.MaxDistance = math.clamp(_G.MaxDistance + 10, 20, 300)
+    distLabel.Text = "Distance : " .. _G.MaxDistance
+end)
+
+distMinus.MouseButton1Click:Connect(function()
+    _G.MaxDistance = math.clamp(_G.MaxDistance - 10, 20, 300)
+    distLabel.Text = "Distance : " .. _G.MaxDistance
+end)
+
 mini.MouseButton1Click:Connect(function()
     main.Visible = false
     icon.Visible = true
@@ -280,21 +331,31 @@ close.MouseButton1Click:Connect(function()
 end)
 
 --------------------------- MAIN LOOP ---------------------------
+-- Update cache pertama kali
+updateCache()
+
 RunService.RenderStepped:Connect(function()
     if not _G.Enabled then return end
 
-    for _, v in pairs(workspace:GetDescendants()) do
-        if v:IsA("Model") 
-        and v:FindFirstChild("Humanoid") 
-        and v:FindFirstChild("HumanoidRootPart") then
+    -- Update cache setiap 1.5 detik
+    if tick() - lastCacheTime >= CACHE_INTERVAL then
+        updateCache()
+    end
 
-            local player = Players:GetPlayerFromCharacter(v)
-            if not player then
-                if not (v:FindFirstChild("Friendly") or v:FindFirstChild("Ally") or v:FindFirstChild("Pet")) then
-                    local humanoid = v.Humanoid
-                    local hrp = v.HumanoidRootPart
+    local character = LocalPlayer.Character
+    local playerRoot = character and character:FindFirstChild("HumanoidRootPart")
+    if not playerRoot then return end
 
-                    if humanoid.Health > 0 and humanoid.MoveDirection.Magnitude > 0 then
+    for _, v in pairs(cachedMobs) do
+        if v and v.Parent then
+            local humanoid = v:FindFirstChild("Humanoid")
+            local hrp = v:FindFirstChild("HumanoidRootPart")
+
+            if humanoid and hrp and humanoid.Health > 0 then
+                local distance = (hrp.Position - playerRoot.Position).Magnitude
+
+                if distance <= _G.MaxDistance then
+                    if humanoid.MoveDirection.Magnitude > 0 then
                         pcall(function()
                             hrp.Size = Vector3.new(_G.HeadSize, _G.HeadSize, _G.HeadSize)
                             hrp.Transparency = _G.Transparency
@@ -307,6 +368,14 @@ RunService.RenderStepped:Connect(function()
                             hrp.Transparency = 1
                         end)
                     end
+                else
+                    pcall(function()
+                        hrp.Size = Vector3.new(2, 2, 1)
+                        hrp.Transparency = 1
+                        hrp.Material = Enum.Material.Plastic
+                        hrp.CanCollide = true
+                        hrp.BrickColor = BrickColor.new("Medium stone grey")
+                    end)
                 end
             end
         end
