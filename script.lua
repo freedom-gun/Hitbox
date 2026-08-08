@@ -1,11 +1,5 @@
---[[
-    Hamimsfy - Mobs Hitbox Expander
-    Only works on specific game
-    Intro + Clean Version
-]]
 
 --------------------------- SETTINGS ---------------------------
-local ALLOWED_PLACE_ID = 70411440483149   -- PlaceId game kamu
 
 _G.HeadSize = 50
 _G.Transparency = 0.5
@@ -16,16 +10,6 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local CoreGui = game:GetService("CoreGui")
-
--- Cek PlaceId (yang benar)
-if game.PlaceId ~= ALLOWED_PLACE_ID then
-    local msg = Instance.new("Message")
-    msg.Text = "❌ Wrong Game!\nPlaceId saat ini: " .. game.PlaceId
-    msg.Parent = workspace
-    task.wait(5)
-    msg:Destroy()
-    return
-end
 
 --------------------------- INTRO ---------------------------
 local function playIntro()
