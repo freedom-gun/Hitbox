@@ -1,4 +1,3 @@
-
 --------------------------- SETTINGS ---------------------------
 
 _G.HeadSize = 50
@@ -51,7 +50,7 @@ local function playIntro()
     version.Size = UDim2.new(0, 400, 0, 20)
     version.Position = UDim2.new(0.5, -200, 0.55, 20)
     version.BackgroundTransparency = 1
-    version.Text = "v2.0  |  Only for this game"
+    version.Text = "Experiment  |  Only for this game"
     version.TextColor3 = Color3.fromRGB(100, 100, 100)
     version.TextSize = 14
     version.Font = Enum.Font.Gotham
@@ -86,7 +85,7 @@ gui.ResetOnSpawn = false
 gui.Parent = CoreGui
 
 local main = Instance.new("Frame")
-main.Size = UDim2.new(0, 180, 0, 160)
+main.Size = UDim2.new(0, 210, 0, 195) -- diperbesar
 main.Position = UDim2.new(0, 100, 0, 100)
 main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 main.BorderSizePixel = 0
@@ -98,8 +97,20 @@ local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 8)
 corner.Parent = main
 
+-- Tombol V2 (kiri atas)
+local v2Btn = Instance.new("TextButton")
+v2Btn.Size = UDim2.new(0, 35, 0, 20)
+v2Btn.Position = UDim2.new(0, 5, 0, 0)
+v2Btn.Text = "V2"
+v2Btn.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+v2Btn.TextColor3 = Color3.new(1, 1, 1)
+v2Btn.Font = Enum.Font.SourceSansBold
+v2Btn.TextSize = 13
+v2Btn.Parent = main
+
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 20)
+title.Size = UDim2.new(1, -80, 0, 20)
+title.Position = UDim2.new(0, 45, 0, 0)
 title.BackgroundTransparency = 1
 title.Text = "Hamimsfy | Mobs Only"
 title.TextColor3 = Color3.new(1, 1, 1)
@@ -108,8 +119,8 @@ title.Font = Enum.Font.SourceSansBold
 title.Parent = main
 
 local toggle = Instance.new("TextButton")
-toggle.Size = UDim2.new(0, 160, 0, 25)
-toggle.Position = UDim2.new(0, 10, 0, 25)
+toggle.Size = UDim2.new(0, 190, 0, 28)
+toggle.Position = UDim2.new(0, 10, 0, 28)
 toggle.Text = "ON"
 toggle.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
 toggle.TextColor3 = Color3.new(1, 1, 1)
@@ -117,8 +128,8 @@ toggle.Font = Enum.Font.SourceSansBold
 toggle.Parent = main
 
 local sizeLabel = Instance.new("TextLabel")
-sizeLabel.Size = UDim2.new(1, 0, 0, 15)
-sizeLabel.Position = UDim2.new(0, 0, 0, 55)
+sizeLabel.Size = UDim2.new(1, 0, 0, 18)
+sizeLabel.Position = UDim2.new(0, 0, 0, 62)
 sizeLabel.BackgroundTransparency = 1
 sizeLabel.Text = "Size : " .. _G.HeadSize
 sizeLabel.TextColor3 = Color3.new(1, 1, 1)
@@ -126,20 +137,20 @@ sizeLabel.TextSize = 13
 sizeLabel.Parent = main
 
 local sizePlus = Instance.new("TextButton")
-sizePlus.Size = UDim2.new(0, 75, 0, 20)
-sizePlus.Position = UDim2.new(0, 10, 0, 70)
+sizePlus.Size = UDim2.new(0, 90, 0, 24)
+sizePlus.Position = UDim2.new(0, 10, 0, 82)
 sizePlus.Text = "Size +"
 sizePlus.Parent = main
 
 local sizeMinus = Instance.new("TextButton")
-sizeMinus.Size = UDim2.new(0, 75, 0, 20)
-sizeMinus.Position = UDim2.new(0, 95, 0, 70)
+sizeMinus.Size = UDim2.new(0, 90, 0, 24)
+sizeMinus.Position = UDim2.new(0, 110, 0, 82)
 sizeMinus.Text = "Size -"
 sizeMinus.Parent = main
 
 local transLabel = Instance.new("TextLabel")
-transLabel.Size = UDim2.new(1, 0, 0, 15)
-transLabel.Position = UDim2.new(0, 0, 0, 95)
+transLabel.Size = UDim2.new(1, 0, 0, 18)
+transLabel.Position = UDim2.new(0, 0, 0, 112)
 transLabel.BackgroundTransparency = 1
 transLabel.Text = "Transparent : " .. _G.Transparency
 transLabel.TextColor3 = Color3.new(1, 1, 1)
@@ -147,34 +158,34 @@ transLabel.TextSize = 13
 transLabel.Parent = main
 
 local transPlus = Instance.new("TextButton")
-transPlus.Size = UDim2.new(0, 75, 0, 20)
-transPlus.Position = UDim2.new(0, 10, 0, 110)
+transPlus.Size = UDim2.new(0, 90, 0, 24)
+transPlus.Position = UDim2.new(0, 10, 0, 132)
 transPlus.Text = "Trans +"
 transPlus.Parent = main
 
 local transMinus = Instance.new("TextButton")
-transMinus.Size = UDim2.new(0, 75, 0, 20)
-transMinus.Position = UDim2.new(0, 95, 0, 110)
+transMinus.Size = UDim2.new(0, 90, 0, 24)
+transMinus.Position = UDim2.new(0, 110, 0, 132)
 transMinus.Text = "Trans -"
 transMinus.Parent = main
 
 local mini = Instance.new("TextButton")
-mini.Size = UDim2.new(0, 20, 0, 20)
-mini.Position = UDim2.new(1, -45, 0, 0)
+mini.Size = UDim2.new(0, 22, 0, 20)
+mini.Position = UDim2.new(1, -50, 0, 0)
 mini.Text = "-"
 mini.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 mini.Parent = main
 
 local close = Instance.new("TextButton")
-close.Size = UDim2.new(0, 20, 0, 20)
-close.Position = UDim2.new(1, -20, 0, 0)
+close.Size = UDim2.new(0, 22, 0, 20)
+close.Position = UDim2.new(1, -25, 0, 0)
 close.Text = "X"
 close.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
 close.TextColor3 = Color3.new(1, 1, 1)
 close.Parent = main
 
 local icon = Instance.new("TextButton")
-icon.Size = UDim2.new(0, 40, 0, 40)
+icon.Size = UDim2.new(0, 45, 0, 45)
 icon.Position = UDim2.new(0, 100, 0, 100)
 icon.Text = "H"
 icon.Visible = false
@@ -206,6 +217,21 @@ local function resetHitbox()
         end
     end
 end
+
+local function destroyCurrent()
+    _G.Enabled = false
+    resetHitbox()
+    if gui and gui.Parent then
+        gui:Destroy()
+    end
+end
+
+-- Tombol V2
+v2Btn.MouseButton1Click:Connect(function()
+    destroyCurrent() -- matikan script ini dulu
+    task.wait(0.1)
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/freedom-gun/Hitbox-mobs/main/script.lua"))()
+end)
 
 toggle.MouseButton1Click:Connect(function()
     _G.Enabled = not _G.Enabled
@@ -250,9 +276,7 @@ icon.MouseButton1Click:Connect(function()
 end)
 
 close.MouseButton1Click:Connect(function()
-    _G.Enabled = false
-    resetHitbox()
-    gui:Destroy()
+    destroyCurrent()
 end)
 
 --------------------------- MAIN LOOP ---------------------------
